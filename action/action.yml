@@ -1,0 +1,49 @@
+name: "EvalGate Regression Gate"
+description: "Statistically honest regression gate for RAG applications. Compares evaluation metrics between baseline and candidate with confidence intervals and significance tests."
+author: "Nikhil Sharma"
+
+branding:
+  icon: "shield"
+  color: "green"
+
+inputs:
+  baseline-run:
+    description: "Path to the baseline evaluation run JSON"
+    required: true
+  candidate-run:
+    description: "Path to the candidate evaluation run JSON"
+    required: true
+  threshold:
+    description: "Significance threshold (alpha) for the regression test"
+    required: false
+    default: "0.05"
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.11"
+
+outputs:
+  result:
+    description: "Gate result: 'pass' or 'fail'"
+  report:
+    description: "Path to the generated Markdown report"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install EvalGate
+      shell: bash
+      run: pip install -e .
+
+    - name: Run gate
+      shell: bash
+      run: |
+        evalgate gate \
+          --baseline "${{ inputs.baseline-run }}" \
+          --candidate "${{ inputs.candidate-run }}" \
+          --threshold "${{ inputs.threshold }}"
