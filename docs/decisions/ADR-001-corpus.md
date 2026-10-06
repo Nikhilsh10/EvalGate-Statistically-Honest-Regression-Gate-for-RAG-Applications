@@ -1,6 +1,6 @@
 # ADR-001: Corpus Selection
 
-**Status:** Accepted
+**Status:** Proposed
 **Date:** 2026-09-30
 **Deciders:** Nikhil Sharma
 
@@ -12,7 +12,7 @@ The PRD requires a public corpus with a licence that permits redistribution for 
 
 **Primary corpus: Stanford Question Answering Dataset (SQuAD) 2.0**
 
-- **Licence:** CC BY-SA 4.0 — permits redistribution with attribution and share-alike.
+- **Licence:** CC BY-SA 4.0 — permits redistribution with attribution and share-alike. (Source: https://rajpurkar.github.io/SQuAD-explorer/)
 - **Source:** https://rajpurkar.github.io/SQuAD-explorer/
 - **Why SQuAD:**
   - Well-established QA benchmark with passage-grounded answers.

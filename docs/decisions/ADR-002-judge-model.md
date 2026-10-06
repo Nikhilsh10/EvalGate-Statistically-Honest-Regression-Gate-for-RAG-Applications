@@ -1,6 +1,6 @@
 # ADR-002: Judge Model Selection
 
-**Status:** Accepted
+**Status:** Proposed
 **Date:** 2026-09-30
 **Deciders:** Nikhil Sharma
 
@@ -18,8 +18,8 @@ EvalGate needs an LLM judge to score generation quality (correctness, faithfulne
 
 - **Model ID:** `llama3.1:8b`
 - **Why:**
-  - Instruction-tuned, good at following structured prompts.
-  - 8B parameters — runs comfortably on machines with 16GB+ RAM.
+  - Instruction-tuned, good at following structured prompts. (Source: https://ollama.com/library/llama3.1)
+  - 8B parameters — runs comfortably on machines with 16GB+ RAM. (Source: https://ollama.com/library/llama3.1)
   - Widely used for LLM-as-judge tasks in the community.
   - Fast inference on consumer hardware (typically 20-40 tokens/sec).
 

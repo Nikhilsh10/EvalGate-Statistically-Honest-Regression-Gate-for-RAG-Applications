@@ -1,6 +1,6 @@
 # ADR-003: Metrics Selection
 
-**Status:** Accepted
+**Status:** Proposed
 **Date:** 2026-09-30
 **Deciders:** Nikhil Sharma
 
@@ -39,7 +39,7 @@ These are computed deterministically against labelled source chunks — no LLM j
 
 ## Consequences
 
-- **ragas dependency:** We use ragas for answer_correctness and faithfulness, but do not fork it. We cite it properly. ragas requires an LLM for these metrics — uses the judge model from ADR-002.
+- **ragas dependency:** We use ragas for answer_correctness and faithfulness, but do not fork it. We cite it properly. ragas requires an LLM for these metrics — uses the judge model from ADR-002. (Source: https://docs.ragas.io/en/stable/)
 - **Custom stats code:** Bootstrap, permutation, and kappa code must be tested against known cases (e.g., bootstrap CI of a known normal distribution). This is the core differentiator.
 - **Deterministic seeds:** All stochastic methods use fixed seeds, recorded per run.
 - **10,000 resamples** is standard but may be slow for full eval sets. Profile at M3 and reduce if necessary (document the trade-off).
