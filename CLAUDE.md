@@ -26,6 +26,7 @@ Read docs/PRD.md before any task. One milestone at a time.
 - Any factual claim in an ADR (licence terms, model capabilities, hardware limits) needs the source page or command output cited in the ADR.
 
 ## Held-out set
+- Held-out set is off limits until M6. Do not read, import, or pass the held-out file path to any script before M6 begins.
 - Held-out file is excluded from default runner config. Record its checksum at creation; any run that reads it must log that fact to docs/evidence/.
 
 ## Working rules

@@ -8,8 +8,6 @@ Commands:
     version — Print the EvalGate version.
 """
 
-from typing import Optional
-
 import typer
 from rich.console import Console
 
@@ -47,7 +45,7 @@ def noise(
     config: str = typer.Option("config.yaml", "--config", "-c", help="Path to config file."),
 ) -> None:
     """Repeat baseline N times to measure run-to-run noise."""
-    console.print(f"[bold green]EvalGate Noise Measurement[/bold green]")
+    console.print("[bold green]EvalGate Noise Measurement[/bold green]")
     console.print(f"Repeats: {repeats}")
     console.print("[yellow]⚠ Noise measurement not yet implemented (M5).[/yellow]")
 
@@ -59,7 +57,7 @@ def gate(
     threshold: float = typer.Option(0.05, "--threshold", "-t", help="Significance threshold."),
 ) -> None:
     """Run the regression gate. Exit code 0=pass, 1=fail."""
-    console.print(f"[bold green]EvalGate Regression Gate[/bold green]")
+    console.print("[bold green]EvalGate Regression Gate[/bold green]")
     console.print(f"Baseline: {baseline}")
     console.print(f"Candidate: {candidate}")
     console.print(f"Threshold: {threshold}")
@@ -69,12 +67,14 @@ def gate(
 @app.command()
 def report(
     run_dir: str = typer.Option("runs/latest", "--run-dir", "-r", help="Run directory."),
-    format: str = typer.Option("html", "--format", "-f", help="Output format: html or markdown."),
+    output_format: str = typer.Option(
+        "html", "--format", "-f", help="Output format: html or markdown."
+    ),
 ) -> None:
     """Generate HTML/Markdown evaluation report."""
-    console.print(f"[bold green]EvalGate Report Generator[/bold green]")
+    console.print("[bold green]EvalGate Report Generator[/bold green]")
     console.print(f"Run dir: {run_dir}")
-    console.print(f"Format: {format}")
+    console.print(f"Format: {output_format}")
     console.print("[yellow]⚠ Report generator not yet implemented (M7).[/yellow]")
 
 

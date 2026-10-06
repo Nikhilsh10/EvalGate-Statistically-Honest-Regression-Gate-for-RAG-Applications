@@ -1,10 +1,12 @@
 # EvalGate — Statistically Honest Regression Gate for RAG Applications
 
-> A CLI, GitHub Action, and small service that evaluates a RAG app against a versioned eval set, reports metrics **with confidence intervals**, **measures LLM judge reliability** against human labels, and **fails a PR only when a regression is statistically supported**.
+> A CLI and GitHub Action that evaluates a RAG app against a versioned eval set, reports metrics **with confidence intervals**, **measures LLM judge reliability** against human labels, and **fails a PR only when a regression is statistically supported**.
 
 ## Status
 
 🚧 **M0 — Skeleton and Decisions** (in progress)
+
+CI: [![CI](https://github.com/Nikhilsh10/EvalGate-Statistically-Honest-Regression-Gate-for-RAG-Applications/actions/workflows/ci.yml/badge.svg)](https://github.com/Nikhilsh10/EvalGate-Statistically-Honest-Regression-Gate-for-RAG-Applications/actions/workflows/ci.yml)
 
 ## Problem
 
@@ -13,40 +15,24 @@ Teams change prompts, chunk sizes, embedding models, and retrievers, then ship b
 1. **Noise mistaken for signal.** A 2-point score change on 50 examples is often within run-to-run noise.
 2. **Unvalidated judges.** LLM-as-judge scores are treated as ground truth without checking agreement with humans.
 
-## What EvalGate Does
+## What EvalGate Will Do
 
-- Evaluates a RAG app against a **versioned eval set** with human-labelled items
-- Reports retrieval metrics (hit@k, MRR) and generation metrics (correctness, faithfulness) **with bootstrap confidence intervals**
-- Measures **LLM judge reliability** via Cohen's kappa against human labels
-- Runs **paired permutation/bootstrap tests** to detect real regressions vs noise
-- Provides a **CI gate** that fails PRs only on statistically supported regressions
+- Evaluate a RAG app against a **versioned eval set** with human-labelled items
+- Report retrieval metrics (hit@k, MRR) and generation metrics **with bootstrap confidence intervals**
+- Measure **LLM judge reliability** via Cohen's kappa against human labels
+- Run **paired permutation/bootstrap tests** to detect real regressions vs noise
+- Provide a **CI gate** that fails PRs only on statistically supported regressions
 
-## Architecture
-
-```
-eval set (versioned JSONL, human labels on subset)
-        │
-        ▼
- runner ── calls target RAG app (HTTP) ──► traces: question, retrieved contexts, answer, latency, tokens
-        │
-        ▼
- metrics
-   retrieval:  hit@k, MRR (against labelled source chunks)
-   generation: judge correctness, faithfulness (ragas where suitable)
-        │
-        ▼
- statistics
-   bootstrap CIs · paired permutation/bootstrap test vs baseline · judge-vs-human agreement (kappa)
-        │
-        ├─► MLflow (experiment tracking)
-        ├─► report (HTML/Markdown artifact)
-        └─► gate: exit code + PR comment via GitHub Action
-```
+None of the above is implemented yet. See the milestone plan in `docs/PRD.md`.
 
 ## Quick Start
 
 ```bash
-# Install
+# Create a virtual environment
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+
+# Install with dev dependencies
 pip install -e ".[dev]"
 
 # Run tests
@@ -56,64 +42,72 @@ make test
 make lint
 ```
 
-## Stack
-
-| Layer | Choice |
-|-------|--------|
-| Language / packaging | Python, `pyproject.toml`, Typer CLI |
-| Target app | RAG-QA-System (FastAPI, FAISS, Ollama) |
-| Metrics | ragas (where suitable), custom retrieval metrics |
-| Stats | numpy/scipy, custom bootstrap and permutation code |
-| Tracking | MLflow |
-| CI | GitHub Actions |
-| Packaging | Docker |
-
-## Repository Layout
+## What Exists at M0
 
 ```
 evalgate/
-├── CLAUDE.md
-├── README.md
-├── pyproject.toml
-├── Makefile
+├── CLAUDE.md               # Agent rules
+├── README.md               # This file
+├── pyproject.toml          # Package metadata and dev deps
+├── requirements.lock       # Tool-generated lockfile (pip freeze in clean venv)
+├── .python-version         # Python 3.12
+├── LICENSE                 # MIT
+├── Makefile                # make test | make lint
 ├── docs/
-│   ├── PRD.md
-│   ├── decisions/
-│   └── evidence/
+│   ├── PRD.md              # Product Requirements Document
+│   ├── decisions/          # ADRs: corpus, judge model, metrics
+│   └── evidence/           # Empty until M0 CI is green
 ├── evalgate/
-│   ├── cli.py
-│   ├── runner.py
+│   ├── __init__.py         # version = "0.1.0"
+│   ├── cli.py              # Typer CLI skeleton (version + --help work)
 │   ├── metrics/
-│   ├── stats/
-│   ├── judge/
-│   └── report/
-├── data/
-│   └── eval_v1/
+│   │   ├── retrieval.py    # hit_at_k, mean_reciprocal_rank (implemented)
+│   │   └── generation.py   # judge_correctness helper (implemented)
+│   └── stats/
+│       ├── bootstrap.py    # bootstrap_ci (implemented, tested)
+│       ├── permutation.py  # paired_permutation_test (implemented, tested)
+│       └── agreement.py    # cohens_kappa, confusion_matrix (implemented, tested)
 ├── tests/
-│   ├── unit/
-│   └── fixtures/
-├── action/
+│   └── unit/               # 19 tests, all passing
 └── .github/workflows/
+    └── ci.yml              # lint + smoke test + pytest on ubuntu-24.04 / Python 3.12
 ```
 
-## Commands
+Future milestone files (runner, judge, report, data, action) are **not present** — they will be added at the milestone that implements them.
 
-| Command | Description |
-|---------|-------------|
-| `make test` | Run unit tests |
-| `make lint` | Run linting |
-| `make eval` | Run full evaluation |
-| `make noise` | Measure run-to-run noise |
-| `make gate` | Run regression gate |
-| `make report` | Generate report |
+## Stack
+
+| Layer | Choice | Note |
+|-------|--------|------|
+| Language / packaging | Python 3.12, `pyproject.toml`, Typer CLI | |
+| Target app | RAG-QA-System (FastAPI, FAISS, Ollama) | Pinned at M1 |
+| Metrics | ragas (where suitable), custom retrieval metrics | Added at M3 |
+| Stats | numpy/scipy, custom bootstrap and permutation code | M0 skeleton present |
+| Tracking | MLflow | Added at M3 |
+| CI | GitHub Actions | `ubuntu-24.04`, Python 3.12 |
+
+## Available Commands
+
+| Command | Available | Description |
+|---------|-----------|-------------|
+| `make test` | ✅ M0 | Run unit tests |
+| `make lint` | ✅ M0 | Run ruff check + format check |
+| `make eval` | M3 | Run full evaluation |
+| `make noise` | M5 | Measure run-to-run noise |
+| `make gate` | M5 | Run regression gate |
+| `make report` | M7 | Generate report |
 
 ## Limitations
 
-- **Status:** Early development — only the project skeleton exists at M0.
-- **Eval set:** Not yet created. Human labelling required (M2).
+- **Status:** M0 skeleton only. No evaluation runs have been performed.
+- **Eval set:** Not created yet. Human labelling required (M2).
+- **Statistics:** Bootstrap CI and permutation test code is implemented and unit-tested against known cases, but has not yet been run on real RAG data.
 - **No generality claims:** Will only be tested against one RAG application.
-- **Local models only:** Uses Ollama (zero API cost), which may be noisier than larger commercial models. This is a feature — we measure the noise.
+- **Local models only:** Uses Ollama (zero API cost), which may be noisier than commercial models. Measuring this noise is the point of M4–M5.
+- **Gate sensitivity:** The minimum detectable effect depends on eval set size and measured noise. This will be computed from real noise data at M5 before the gate threshold is set.
+
+All numbers in this README come from `docs/evidence/`. Until that directory contains files, no performance claims are made.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

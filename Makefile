@@ -1,4 +1,5 @@
-.PHONY: install install-dev lint test eval noise gate report clean help
+.PHONY: install install-dev lint test format clean help
+# NOTE: eval, noise, gate, report targets are added at the milestone that implements them.
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -24,18 +25,6 @@ test: ## Run unit tests
 
 test-cov: ## Run tests with coverage report
 	pytest tests/unit/ -v --tb=short --cov=evalgate --cov-report=term-missing
-
-eval: ## Run full evaluation against the target RAG app
-	evalgate run --config config.yaml
-
-noise: ## Repeat baseline N times to measure run-to-run noise
-	evalgate noise --repeats 5 --config config.yaml
-
-gate: ## Run the regression gate (exit code 0 = pass, 1 = fail)
-	evalgate gate --baseline runs/baseline.json --candidate runs/candidate.json
-
-report: ## Generate HTML/Markdown evaluation report
-	evalgate report --run-dir runs/latest/
 
 clean: ## Remove build artifacts and caches
 	rm -rf build/ dist/ *.egg-info .pytest_cache .ruff_cache .mypy_cache

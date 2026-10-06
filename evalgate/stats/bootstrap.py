@@ -107,9 +107,7 @@ def _bca_interval(
     z0 = sp_stats.norm.ppf(np.mean(boot_statistics < point_estimate))
 
     # Acceleration factor (jackknife)
-    jackknife_estimates = np.array(
-        [statistic(np.delete(data, i)) for i in range(n)]
-    )
+    jackknife_estimates = np.array([statistic(np.delete(data, i)) for i in range(n)])
     jack_mean = np.mean(jackknife_estimates)
     numerator = np.sum((jack_mean - jackknife_estimates) ** 3)
     denominator = 6.0 * (np.sum((jack_mean - jackknife_estimates) ** 2) ** 1.5)

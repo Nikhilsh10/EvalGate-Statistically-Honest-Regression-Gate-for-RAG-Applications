@@ -82,7 +82,7 @@ eval set (versioned JSONL, human labels on subset)
 | CI | GitHub Actions | Use recorded model outputs (fixtures) for CI; full local-model runs are local/nightly |
 | Packaging | Docker | |
 
-Pin all versions at M0.
+Ranges in pyproject.toml, exact pins in a tool-generated lockfile (`requirements.lock`); add dependencies only when their milestone starts.
 
 ## 7. Data policy
 
@@ -93,8 +93,8 @@ Pin all versions at M0.
 ## 8. Milestones
 
 ### M0 — Skeleton and decisions (day 1–2)
-Repo layout, pyproject, Makefile, CI with lint and a placeholder test, ADR for corpus, judge model, and metrics.
-**Verify:** CI green; `make test` output.
+Repo layout, pyproject, Makefile, CI with lint and a real smoke test (import, version, --help exit 0), ADR for corpus, judge model, and metrics.
+**Verify:** CI green (commit hash + run URL saved to `docs/evidence/M0.txt`); `make test` output.
 
 ### M1 — Traceable target app (day 3–5)
 Add a tracing endpoint or wrapper to the RAG app that returns retrieved chunk IDs, scores, answer, latency, and token counts. Pin target app version.

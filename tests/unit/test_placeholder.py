@@ -7,11 +7,11 @@ Real tests will be added alongside each milestone's implementation.
 import numpy as np
 
 from evalgate import __version__
-from evalgate.metrics.retrieval import hit_at_k, mean_reciprocal_rank
 from evalgate.metrics.generation import judge_correctness
+from evalgate.metrics.retrieval import hit_at_k, mean_reciprocal_rank
+from evalgate.stats.agreement import cohens_kappa, confusion_matrix_binary
 from evalgate.stats.bootstrap import bootstrap_ci
 from evalgate.stats.permutation import paired_permutation_test
-from evalgate.stats.agreement import cohens_kappa, confusion_matrix_binary
 
 
 class TestVersion:
@@ -124,6 +124,7 @@ class TestPermutationTest:
     def test_mismatched_lengths_raises(self) -> None:
         """Different length arrays should raise ValueError."""
         import pytest
+
         with pytest.raises(ValueError, match="equal-length"):
             paired_permutation_test(np.array([1.0, 2.0]), np.array([1.0]))
 
@@ -158,5 +159,6 @@ class TestAgreement:
     def test_mismatched_lengths_raises(self) -> None:
         """Different length arrays should raise ValueError."""
         import pytest
+
         with pytest.raises(ValueError, match="same length"):
             cohens_kappa(np.array([1, 0]), np.array([1]))

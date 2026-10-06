@@ -47,8 +47,6 @@ def cohens_kappa(
         msg = f"Raters must have same length. Got {len(rater_a)} and {len(rater_b)}."
         raise ValueError(msg)
 
-    n = len(rater_a)
-
     # Observed agreement
     p_o = np.mean(rater_a == rater_b)
 
