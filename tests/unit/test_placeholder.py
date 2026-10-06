@@ -28,6 +28,6 @@ def test_cli_help() -> None:
 
 def test_cli_version() -> None:
     """Test that the CLI returns the correct version."""
-    result = runner.invoke(app, ["--version"])
+    result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
     assert "0.1.0" in result.stdout
